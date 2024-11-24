@@ -3,44 +3,42 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import Toast from 'react-native-toast-message'; // Import Toast
 
-const AuthScreen = ({ navigate }: { navigate: (screen: string) => void }) => {
-  const [email, setEmail] = useState('');
+const SignUpScreen = ({ navigate }: { navigate: (screen: string) => void }) => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      setError('Both email and password are required.');
+  const handleSignUp = () => {
+    if (!username || !password || !confirmPassword) {
+      setError('All fields are required.');
       return;
     }
 
-    if (email === 'admin' && password === 'admin') {
-      setError(null); // Clear any existing errors
-      Toast.show({
-        type: 'success',
-        text1: 'Login Successful',
-        text2: 'Welcome to School Finder! 🎉',
-      });
-      setTimeout(() => navigate('Home'), 1500); // Navigate after the toast
-    } else {
-      Toast.show({
-        type: 'error',
-        text1: 'Invalid Credentials',
-        text2: 'Please check your username or password.',
-      });
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
     }
+
+    setError(null); // Clear any existing errors
+    Toast.show({
+      type: 'success',
+      text1: 'Sign Up Successful',
+      text2: 'Welcome! You can now log in. 🎉',
+    });
+    setTimeout(() => navigate('Auth'), 1500); // Navigate after the toast
   };
 
   return (
     <View style={styles.container}>
       <Text variant="headlineMedium" style={styles.title}>
-        Login
+        Sign Up
       </Text>
       {error && <Text style={styles.errorText}>{error}</Text>} {/* Display errors */}
       <TextInput
         label="Username"
-        value={email}
-        onChangeText={setEmail}
+        value={username}
+        onChangeText={setUsername}
         style={styles.input}
         mode="outlined"
       />
@@ -52,15 +50,23 @@ const AuthScreen = ({ navigate }: { navigate: (screen: string) => void }) => {
         mode="outlined"
         secureTextEntry
       />
-      <Button mode="contained" onPress={handleLogin} style={styles.button}>
-        Login
+      <TextInput
+        label="Confirm Password"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        style={styles.input}
+        mode="outlined"
+        secureTextEntry
+      />
+      <Button mode="contained" onPress={handleSignUp} style={styles.button}>
+        Sign Up
       </Button>
       <Button
         mode="outlined"
-        onPress={() => navigate('SignUp')}
+        onPress={() => navigate('Auth')}
         style={styles.button}
       >
-        Sign Up
+        Back to Login
       </Button>
     </View>
   );
@@ -91,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AuthScreen;
+export default SignUpScreen;
